@@ -300,7 +300,24 @@ def get_writer_locations(writer_id):
 
     return json.JSONEncoder.encode(json.JSONEncoder(), result)
 
+# Get a list of all location for a writer
+@app.route('/writer/name', methods=['GET'])
+@cross_origin()
+def search_locations_by_writer_name():
+    query = request.args.get('q')
 
+    # Get all movies from DB
+    writers = Writer.query.filter(Writer.name == query)
+
+    result = []
+    for writer in writers:
+        result.append({'id': writer.id})
+
+    if len(result) == 1:
+        return get_writer_locations(result[0]['id'])
+    else:
+        # empty or more than one
+        return json.JSONEncoder.encode(json.JSONEncoder(), result)
 
 # Get a list of all actors names
 @app.route('/actors', methods=['GET'])
