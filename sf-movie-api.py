@@ -192,6 +192,28 @@ def get_movie_locations(movie_id):
     return json.JSONEncoder.encode(json.JSONEncoder(), result)
 
 
+# Get a list of all location for a movie
+@app.route('/movie/name', methods=['GET'])
+@cross_origin()
+def search_locations_by_movie_name():
+    query = request.args.get('q')
+
+    # Get all movies from DB
+    movies = Movie.query.filter(Movie.title == query)
+
+    result = []
+    for movie in movies:
+        result.append({'id': movie.id})
+
+    if len(result) == 1:
+        logging.info(result[0]['id'])
+        return get_movie_locations(result[0]['id'])
+    else:
+        # empty or more than one
+        return json.JSONEncoder.encode(json.JSONEncoder(), result)
+
+
+
 # Get a list of all directors names
 @app.route('/directors', methods=['GET'])
 @cross_origin()
