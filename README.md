@@ -16,14 +16,18 @@ API Routes
 /movies
 /movie/<int:movie_id>
 /movie/<int:movie_id>/locations
+/movie/name
 
 /directors
 /director/<int:director_id>/locations
+/director/name
 
 /writers
 /writer/<int:writer_id>/locations
+/writer/name
 
 /actors
 /actor/<int:actor_id>/locations
+/actor/name
 
 /locations
