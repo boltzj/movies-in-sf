@@ -1,10 +1,16 @@
 sf-movie-api
 ============
 
-Python / Flask / SQLAlchemy / API / SF_DATA (import sf-goc.cvs / JSON API (coming..)
+Python / Flask / SQLAlchemy / API / SF_DATA
 
+SF movies backend implementation
 
-API
+Build with Python and Flask
+
+This my first project with Python + Flask, I've choose Python because most of Uber back-end uses it.
+Flask is a quick and powerful framework to make an API
+
+API Routes
 ============
 
 /movies
