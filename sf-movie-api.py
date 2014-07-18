@@ -137,21 +137,117 @@ def get_movies():
     return json.JSONEncoder.encode(json.JSONEncoder(), result)
 
 
+# Get a movie information
+@app.route('/movie/<int:movie_id>', methods=['GET'])
+@cross_origin()
+def get_movie_by_id(movie_id):
+    # Request DB for movie
+    movie = Movie.query.get(movie_id)
+
+    # FIXME : Handle 404 error
+    return movie.to_json()
+
+
+# Get a movie locations
+@app.route('/movie/<int:movie_id>/locations', methods=['GET'])
+@cross_origin()
+def get_movie_locations(movie_id):
+    # Request DB for movie
+    locations = db.session.query(Location).filter(Location.movie_id == movie_id)
+
+    result = []
+    # FIXME : Handle 404 error
+    for location in locations:
+        movie = get_movie_by_id()
+        result.append({
+            'title': movie.title,
+            'content': location.fun_facts,
+            'lat': location.latitude,
+            'lng': location.longitude
+        })
+
+    return json.JSONEncoder.encode(json.JSONEncoder(), result)
+
+
+# Get a list of all producers names
+@app.route('/directors', methods=['GET'])
+@cross_origin()
+def get_directors():
+    # Get all movies from DB
+    directors = Director.query.all()
+
+    result = []
+    for director in directors:
+        result.append(director.name)
+
+    # return result as JSON array
+    return json.JSONEncoder.encode(json.JSONEncoder(), result)
+
+
+# Get all locations for a producer
+@app.route('/producer/<int:producer_id>/locations', methods=['GET'])
+@cross_origin()
+def get_producer_locations(producer_id):
+    # FIXME
+    return producer_id + ' \n'
+
+
+# Get a list of all writers names
+@app.route('/writers', methods=['GET'])
+@cross_origin()
+def get_writers():
+    # Get all movies from DB
+    writers = Writer.query.all()
+
+    result = []
+    for writer in writers:
+        result.append(writer.name)
+
+    # return result as JSON array
+    return json.JSONEncoder.encode(json.JSONEncoder(), result)
+
+
+# Get all locations for a writer
+@app.route('/writer/<int:writer_id>/locations', methods=['GET'])
+@cross_origin()
+def get_writer_locations(writer_id):
+    # FIXME
+    return writer_id + ' \n'
+
+
+# Get a list of all actors names
+@app.route('/actors', methods=['GET'])
+@cross_origin()
+def get_actors():
+    # Get all movies from DB
+    actors = Actor.query.all()
+
+    result = []
+    for actor in actors:
+        result.append(actor.name)
+
+    # return result as JSON array
+    return json.JSONEncoder.encode(json.JSONEncoder(), result)
+
+
+# Get all locations for an actor
+@app.route('/actor/<int:actor_id>/locations', methods=['GET'])
+@cross_origin()
+def get_actor_locations(actor_id):
+    # FIXME
+    return actor_id + ' \n'
+
+
+# Get all locations
 @app.route('/locations', methods=['GET'])
 @cross_origin()
 def get_locations():
-
-    # for arg in request.args:
-    #     if arg == 'title':
-    #         q2 = db.session.query(Movie).filter(Movie.title == 'Superman')
-
     locations = db.session.query(Location).join(Movie)
 
     result = []
     for location in locations:
         result.append({
             'movie_title': location.movie.title,
-
             'location_name': location.name,
             'fun_facts': location.fun_facts,
             'lat': location.latitude,
