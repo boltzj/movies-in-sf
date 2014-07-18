@@ -177,14 +177,13 @@ def get_movie_by_id(movie_id):
 @cross_origin()
 def get_movie_locations(movie_id):
     # Request DB for movie
-    locations = db.session.query(Location).filter(Location.movie_id == movie_id)
+    locations = db.session.query(Location).join(Movie).filter(Location.movie_id == movie_id)
 
     result = []
     # FIXME : Handle 404 error
     for location in locations:
-        movie = get_movie_by_id()
         result.append({
-            'title': movie.title,
+            'title': location.movie.title,
             'content': location.fun_facts,
             'lat': location.latitude,
             'lng': location.longitude
