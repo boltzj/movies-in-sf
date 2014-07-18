@@ -193,7 +193,7 @@ def get_movie_locations(movie_id):
     return json.JSONEncoder.encode(json.JSONEncoder(), result)
 
 
-# Get a list of all producers names
+# Get a list of all directors names
 @app.route('/directors', methods=['GET'])
 @cross_origin()
 def get_directors():
@@ -208,12 +208,12 @@ def get_directors():
     return json.JSONEncoder.encode(json.JSONEncoder(), result)
 
 
-# Get all locations for a producer
-@app.route('/producer/<int:producer_id>/locations', methods=['GET'])
+# Get all locations for a director
+@app.route('/director/<int:director_id>/locations', methods=['GET'])
 @cross_origin()
-def get_producer_locations(producer_id):
+def get_director_locations(director_id):
     # FIXME
-    return producer_id + ' \n'
+    return director_id + ' \n'
 
 
 # Get a list of all writers names

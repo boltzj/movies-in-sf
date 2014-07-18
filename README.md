@@ -11,8 +11,8 @@ API
 /movie/<int:movie_id>
 /movie/<int:movie_id>/locations
 
-/producers
-/producer/<int:producer_id>/locations
+/directors
+/director/<int:director_id>/locations
 
 /writers
 /writer/<int:writer_id>/locations
