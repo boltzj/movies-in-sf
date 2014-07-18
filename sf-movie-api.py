@@ -5,6 +5,7 @@ import json
 
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.cors import cross_origin
 
 app = Flask(__name__)
 
@@ -60,6 +61,29 @@ def get_movies():
     # return result as JSON array
     return json.JSONEncoder.encode(json.JSONEncoder(), result)
 
+
+@app.route('/locations', methods=['GET'])
+@cross_origin()
+def get_locations():
+
+    # for arg in request.args:
+    #     if arg == 'title':
+    #         q2 = db.session.query(Movie).filter(Movie.title == 'Superman')
+
+    locations = db.session.query(Location).join(Movie)
+
+    result = []
+    for location in locations:
+        result.append({
+            'movie_title': location.movie.title,
+
+            'location_name': location.name,
+            'fun_facts': location.fun_facts,
+            'lat': location.latitude,
+            'lng': location.longitude
+        })
+
+    return json.JSONEncoder.encode(json.JSONEncoder(), result)
 
 if __name__ == '__main__':
     app.run(debug=True)
