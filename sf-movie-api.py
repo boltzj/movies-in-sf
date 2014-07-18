@@ -248,6 +248,26 @@ def get_director_locations(director_id):
     return json.JSONEncoder.encode(json.JSONEncoder(), result)
 
 
+# Get a list of all location for a director
+@app.route('/director/name', methods=['GET'])
+@cross_origin()
+def search_locations_by_director_name():
+    query = request.args.get('q')
+
+    # Get all movies from DB
+    directors = Director.query.filter(Director.name == query)
+
+    result = []
+    for director in directors:
+        result.append({'id': director.id})
+
+    if len(result) == 1:
+        return get_director_locations(result[0]['id'])
+    else:
+        # empty or more than one
+        return json.JSONEncoder.encode(json.JSONEncoder(), result)
+
+
 # Get a list of all writers names
 @app.route('/writers', methods=['GET'])
 @cross_origin()
