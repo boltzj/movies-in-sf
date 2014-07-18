@@ -22,12 +22,28 @@ class Movie(db.Model):
     release_year = db.Column(db.Integer)
     production = db.Column(db.String(255))
     distributor = db.Column(db.String(255))
+    # Foreign Keys
+    locations = db.relationship('Location', backref='movie', lazy='dynamic')
 
     def __init__(self, title, release_year, production, distributor):
         self.title = title
         self.release_year = release_year
         self.production = production
         self.distributor = distributor
+
+
+class Location(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255))
+    fun_facts = db.Column(db.String(255))
+    latitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
+    movie_id = db.Column(db.Integer, db.ForeignKey('movie.id'))
+
+    def __init__(self, name, fun_facts, movie_id):
+        self.name = name
+        self.fun_facts = fun_facts
+        self.movie_id = movie_id
 
 
 # Get a list of all movies names
