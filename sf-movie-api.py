@@ -122,11 +122,34 @@ class Location(db.Model):
         self.fun_facts = fun_facts
         self.movie_id = movie_id
 
+    def geocode(self, attempt):
+        geocoder = GoogleGeocoder()
+
+        try:
+            logging.info('Try to geocode ' + self.name + ', San Francisco, CA')
+            search = geocoder.get(self.name + ', San Francisco, CA')
+
+            if search.__len__() > 0:
+                logging.info(search)
+                self.latitude = search[0].geometry.location.lat
+                self.longitude = search[0].geometry.location.lng
+            else:
+                logging.info('No result for ' + self.name + ', San Francisco, CA')
+
+            db.session.commit()
+
+        except ValueError:
+            # FIXME: Handle ValueError: OVER_QUERY_LIMIT (ValueError(data["status"])
+            logging.warning('Google geocoder : ValueError')
+            time.sleep(1)
+            if attempt < 5:
+                self.geocode(attempt + 1)
+
 
 # Get a list of all movies names
 @app.route('/movies', methods=['GET'])
+@cross_origin()
 def get_movies():
-
     # Get all movies from DB
     movies = Movie.query.all()
 
@@ -279,14 +302,6 @@ def update_db():
         if header[0] != 'Title' or header[1] != 'Release Year':
             return "Bad File.."
 
-            # # First line contains column names
-            # if i == 0:
-            #     # column_name = {}
-            #     # for key, value in row:
-            #     #     column_name[key] = value
-            #     i += 1
-            #     continue
-
         for row in reader:
 
             # Read CSV line
@@ -410,14 +425,14 @@ def update_db():
                 # Create new Location if not empty
                 if '' != location:
                     new_location = Location(location, fun_facts, movie.id)
-                    new_location.geocode()
+                    new_location.geocode(0)
                     db.session.add(new_location)
 
             # Movie already exists, create new Location
             else:
                 if '' != location:
                     new_location = Location(location, fun_facts, movies[title]['id'])
-                    new_location.geocode()
+                    new_location.geocode(0)
                     db.session.add(new_location)
 
     db.session.commit()
