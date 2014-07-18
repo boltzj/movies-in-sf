@@ -212,8 +212,19 @@ def get_directors():
 @app.route('/director/<int:director_id>/locations', methods=['GET'])
 @cross_origin()
 def get_director_locations(director_id):
-    # FIXME
-    return director_id + ' \n'
+
+    locations = db.session.query(Location).join(Movie).join(Director).filter(Director.id == director_id)
+
+    result = []
+    for location in locations:
+        result.append({
+            'title': location.movie.title,
+            'content': location.fun_facts,
+            'lat': location.latitude,
+            'lng': location.longitude
+        })
+
+    return json.JSONEncoder.encode(json.JSONEncoder(), result)
 
 
 # Get a list of all writers names
@@ -235,8 +246,19 @@ def get_writers():
 @app.route('/writer/<int:writer_id>/locations', methods=['GET'])
 @cross_origin()
 def get_writer_locations(writer_id):
-    # FIXME
-    return writer_id + ' \n'
+    locations = db.session.query(Location).join(Movie).join(Writer).filter(Writer.id == writer_id)
+
+    result = []
+    for location in locations:
+        result.append({
+            'title': location.movie.title,
+            'content': location.fun_facts,
+            'lat': location.latitude,
+            'lng': location.longitude
+        })
+
+    return json.JSONEncoder.encode(json.JSONEncoder(), result)
+
 
 
 # Get a list of all actors names
@@ -258,8 +280,23 @@ def get_actors():
 @app.route('/actor/<int:actor_id>/locations', methods=['GET'])
 @cross_origin()
 def get_actor_locations(actor_id):
-    # FIXME
-    return actor_id + ' \n'
+    locations = db.session.query(Location)\
+        .join(Movie)\
+        .join(Actor, Movie.actor1_id == Actor.id)\
+        .join(Actor, Movie.actor2_id == Actor.id)\
+        .join(Actor, Movie.actor3_id == Actor.id)\
+        .filter(Actor.id == actor_id)
+
+    result = []
+    for location in locations:
+        result.append({
+            'title': location.movie.title,
+            'content': location.fun_facts,
+            'lat': location.latitude,
+            'lng': location.longitude
+        })
+
+    return json.JSONEncoder.encode(json.JSONEncoder(), result)
 
 
 # Get all locations
