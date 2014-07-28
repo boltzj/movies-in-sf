@@ -100,12 +100,6 @@ class Movie(db.Model):
             'Release Year': self.release_year,
             'Production Company': self.production,
             'Distributor': self.distributor,
-            # 'locations : []
-            # 'Director': director,
-            # 'Writer': writer,
-            # 'Actor 1': actor1,
-            # 'Actor 2': actor2,
-            # 'Actor 3': actor3,
         })
 
 
@@ -184,6 +178,7 @@ def get_movie_locations(movie_id):
     for location in locations:
         result.append({
             'title': location.movie.title,
+            'location': location.name,
             'content': location.fun_facts,
             'lat': location.latitude,
             'lng': location.longitude
@@ -240,6 +235,7 @@ def get_director_locations(director_id):
     for location in locations:
         result.append({
             'title': location.movie.title,
+            'location': location.name,
             'content': location.fun_facts,
             'lat': location.latitude,
             'lng': location.longitude
@@ -294,6 +290,7 @@ def get_writer_locations(writer_id):
         result.append({
             'title': location.movie.title,
             'content': location.fun_facts,
+            'location': location.name,
             'lat': location.latitude,
             'lng': location.longitude
         })
@@ -367,6 +364,7 @@ def get_actor_locations(actor_id):
     for location in locations:
         result.append({
             'title': location.movie.title,
+            'location': location.name,
             'content': location.fun_facts,
             'lat': location.latitude,
             'lng': location.longitude
@@ -379,6 +377,7 @@ def get_actor_locations(actor_id):
     for location in locations:
         result.append({
             'title': location.movie.title,
+            'location': location.name,
             'content': location.fun_facts,
             'lat': location.latitude,
             'lng': location.longitude
@@ -391,6 +390,7 @@ def get_actor_locations(actor_id):
     for location in locations:
         result.append({
             'title': location.movie.title,
+            'location': location.name,
             'content': location.fun_facts,
             'lat': location.latitude,
             'lng': location.longitude
@@ -408,9 +408,9 @@ def get_locations():
     result = []
     for location in locations:
         result.append({
-            'movie_title': location.movie.title,
-            'location_name': location.name,
-            'fun_facts': location.fun_facts,
+            'title': location.movie.title,
+            'location': location.name,
+            'content': location.fun_facts,
             'lat': location.latitude,
             'lng': location.longitude
         })
