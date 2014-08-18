@@ -1,5 +1,6 @@
-Flask==0.10.1
+Flask
 Flask-SQLAlchemy
 pymysql
 flask-cors
+flask-script
 python-googlegeocoder
