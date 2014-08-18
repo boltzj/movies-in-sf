@@ -1,4 +1,4 @@
-# sf-movie-api
+# sf-movies
 ---
 
 ## Description
@@ -10,13 +10,15 @@ Python / Flask / SQLAlchemy / API / SF_DATA
 
 **Build with Python and Flask**
 
-*This my first project with Python + Flask, I've choose Python because most of Uber back-end uses it.
-Flask is a quick and powerful framework to make an API*
 
 ## Installation
 ---
+To load data in the database:  
+In a shell run :  
+```
+python manage.py import_db
+```
 
-TODO
 
 ## API Routes
 ---
@@ -31,22 +33,24 @@ TODO
     Get Locations for a movie
     
 ### /movie/name
-    Get
 
 ### /directors
-
+    List all directors names
+    
 ### /director/<int:director_id>/locations
 
 ### /director/name
 
 ### /writers
-
+    List all writers names
+    
 ### /writer/<int:writer_id>/locations
 
 ### /writer/name
 
 ### /actors
-
+    List all actors names
+    
 ### /actor/<int:actor_id>/locations
 
 ### /actor/name

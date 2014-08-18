@@ -13,7 +13,7 @@ from app.models.location import Location
 from flask import jsonify, request
 
 
-@api.route('/movie', methods=['GET'])
+@api.route('/movies', methods=['GET'])
 @cross_origin()
 def get_movies():
     # Get all movies from DB
