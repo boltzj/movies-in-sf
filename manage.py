@@ -20,6 +20,21 @@ manager = Manager(app)
 def make_shell_context():
     return dict(app=app, db=db)
 
+
+@manager.command
+def test():
+    """
+    Run the unit tests.
+    """
+    import unittest
+
+    # Look for existing tests in the 'tests' folder
+    tests = unittest.TestLoader().discover('tests')
+
+    # Run the tests
+    unittest.TextTestRunner().run(tests)
+
+
 # Import data from csv in the database
 @manager.command
 def import_db():
