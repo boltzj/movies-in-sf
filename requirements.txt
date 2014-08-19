@@ -5,4 +5,4 @@ flask-cors
 flask-script
 python-googlegeocoder
 gunicorn
-Psycopg
+psycopg2==2.5.1
