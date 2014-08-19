@@ -1,16 +1,16 @@
 from flask import Flask
-import os
 from flask.ext.sqlalchemy import SQLAlchemy
+from config import config
 
 db = SQLAlchemy()
 
 
-def create_app():
+def create_app(config_name):
     app = Flask(__name__)
 
-    # Database config
-    config = os.path.join(app.root_path, 'config.cfg')
-    app.config.from_pyfile(config)
+    # Read config from object
+    app.config.from_object(config[config_name])
+    config[config_name].init_app(app)
 
     db.init_app(app)
 
@@ -19,4 +19,3 @@ def create_app():
     app.register_blueprint(api_blueprint)
 
     return app
-
