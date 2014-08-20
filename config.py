@@ -1,5 +1,6 @@
 import os
 
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -12,7 +13,11 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL')
+
+    if os.environ.get('DEV_DATABASE_URL'):
+        SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL')
+    else:
+        SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
 
 
 class TestingConfig(Config):
@@ -21,7 +26,6 @@ class TestingConfig(Config):
     if os.environ.get('TEST_DATABASE_URL'):
         SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL')
     else:
-        basedir = os.path.abspath(os.path.dirname(__file__))
         SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data-test.sqlite')
 
 
