@@ -29,7 +29,6 @@ def get_movies_titles():
     return json.JSONEncoder.encode(json.JSONEncoder(), result)
 
 
-# Get a movie information
 @api.route('/movie/<int:movie_id>', methods=['GET'])
 @cross_origin()
 def get_movie_by_id(movie_id):
@@ -44,7 +43,6 @@ def get_movie_by_id(movie_id):
     return movie.to_json()
 
 
-# Get a movie locations
 @api.route('/movie/<int:movie_id>/locations', methods=['GET'])
 @cross_origin()
 def get_movie_locations(movie_id):
@@ -68,10 +66,13 @@ def get_movie_locations(movie_id):
     return json.JSONEncoder.encode(json.JSONEncoder(), result)
 
 
-# Get a list of all location for a movie
 @api.route('/movie/name', methods=['GET'])
 @cross_origin()
 def search_locations_by_movie_name():
+    """
+    Take a name of a movie and return all location for a movie
+    :return:
+    """
     query = request.args.get('q')
 
     # Get all movies from DB
