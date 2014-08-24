@@ -58,3 +58,5 @@ docs/_build/
 Procfile
 
 venv
+
+*.sqlite
