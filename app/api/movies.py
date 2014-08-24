@@ -6,10 +6,9 @@ from flask.ext.cors import cross_origin
 
 # Models
 from app.models.movie import Movie
-from app.models.location import Location
 
 # Utils
-from flask import jsonify, request
+from flask import request
 
 
 @api.route('/movies', methods=['GET'])
