@@ -37,7 +37,7 @@ def get_movie_by_id(movie_id):
     :param movie_id:
     :return: movie information
     """
-    # Request DB for movie
+    # Request DB for movie or raise 404 Error
     movie = Movie.query.get_or_404(movie_id)
 
     return movie.to_json()
@@ -49,7 +49,7 @@ def get_movie_locations(movie_id):
     """
     Get all locations for a movie
     """
-    # Get the movie
+    # Request DB for movie or raise 404 Error
     movie = Movie.query.get_or_404(movie_id)
 
     # Store the location in an array

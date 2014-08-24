@@ -1,7 +1,8 @@
+from app.api import api
 from flask import jsonify
 
-
-def not_found():
-    response = jsonify({'error': 'not found'})
-    response.status_code = 404
+@api.errorhandler(404)
+def not_found(e):
+    response = jsonify({'error': e.name, 'description': e.description})
+    response.status_code = e.code
     return response
