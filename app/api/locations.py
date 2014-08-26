@@ -7,11 +7,12 @@ from flask.ext.cors import cross_origin
 from app.models.location import Location
 
 
-# Get all locations
 @api.route('/locations', methods=['GET'])
 @cross_origin()
 def get_locations():
-
+    """
+    :return: Return a list with all locations
+    """
     # Get all movies from DB
     locations = Location.query.all()
 

@@ -20,6 +20,7 @@ class Location(db.Model):
     fun_facts = db.Column(db.String(255))
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
+    # Relations
     movie_id = db.Column(db.Integer, db.ForeignKey('movie.id'))
 
     def __init__(self, name, fun_facts, movie_id):

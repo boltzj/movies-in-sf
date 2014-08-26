@@ -9,10 +9,13 @@ from app.models.writer import Writer
 from app.models.location import Location
 from app.models.movie import Movie
 
-# Get a list of all writers names
+
 @api.route('/writers', methods=['GET'])
 @cross_origin()
 def get_writers():
+    """
+    :return: Return a list of all writers names
+    """
     # Get all movies from DB
     writers = Writer.query.all()
 
@@ -24,10 +27,13 @@ def get_writers():
     return json.JSONEncoder.encode(json.JSONEncoder(), result)
 
 
-# Get all locations for a writer
 @api.route('/writer/<int:writer_id>/locations', methods=['GET'])
 @cross_origin()
 def get_writer_locations(writer_id):
+    """
+    :param writer_id: Writer ID
+    :return: Return all locations for a writer
+    """
     locations = db.session.query(Location).join(Movie).join(Writer).filter(Writer.id == writer_id)
 
     result = []
@@ -42,10 +48,14 @@ def get_writer_locations(writer_id):
 
     return json.JSONEncoder.encode(json.JSONEncoder(), result)
 
-# Get a list of all location for a writer
+
 @api.route('/writer/name', methods=['GET'])
 @cross_origin()
 def search_locations_by_writer_name():
+    """
+    looks for a the name of writer in a URL parameter q
+    :return: Return all locations for a writer name
+    """
     query = request.args.get('q')
 
     # Get all movies from DB

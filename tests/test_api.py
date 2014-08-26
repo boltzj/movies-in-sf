@@ -13,3 +13,4 @@ class APITestCase(unittest.TestCase):
     def test_404(self):
         response = self.client.get('url/that/does/not/exist')
         self.assertTrue(response.status_code == 404)
+
