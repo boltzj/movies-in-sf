@@ -1,7 +1,7 @@
 import json
 
 # Core
-from . import api
+from app.api import api
 from flask.ext.cors import cross_origin
 
 # Models

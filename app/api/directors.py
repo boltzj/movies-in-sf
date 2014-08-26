@@ -1,5 +1,5 @@
 # Core
-from . import api
+from app.api import api
 from flask import json, request
 from app import db
 from flask.ext.cors import cross_origin
