@@ -10,10 +10,12 @@ from app.models.location import Location
 from app.models.movie import Movie
 
 
-# Get a list of all actors names
 @api.route('/actors', methods=['GET'])
 @cross_origin()
 def get_actors():
+    """
+    :return: List of all actors names
+    """
     # Get all movies from DB
     actors = Actor.query.all()
 
@@ -24,10 +26,13 @@ def get_actors():
     # return result as JSON array
     return json.JSONEncoder.encode(json.JSONEncoder(), result)
 
-# Get a list of all location for an actor
+
 @api.route('/actor/name', methods=['GET'])
 @cross_origin()
 def search_locations_by_actor_name():
+    """
+    :return: List of all location for an actor name
+    """
     query = request.args.get('q')
 
     # Get all movies from DB
@@ -44,10 +49,14 @@ def search_locations_by_actor_name():
         return json.JSONEncoder.encode(json.JSONEncoder(), result)
 
 
-# Get all locations for an actor
 @api.route('/actor/<int:actor_id>/locations', methods=['GET'])
 @cross_origin()
 def get_actor_locations(actor_id):
+    """
+    Return the list of all locations for an actor
+    :param actor_id:
+    :return: Get all locations for an actor
+    """
 
     result = []
 
