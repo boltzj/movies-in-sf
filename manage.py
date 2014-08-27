@@ -17,6 +17,7 @@ manager = Manager(app)
 
 
 def make_shell_context():
+    # Add flask application (app) and Database (db) in the Python shell
     return dict(app=app, db=db)
 
 
@@ -54,8 +55,8 @@ def import_db():
     db.create_all()
 
     try:
-        with open(os.path.dirname(__file__) + 'data/data.csv') as csvfile:
-            reader = csv.reader(csvfile, delimiter=',')
+        with open(os.path.dirname(__file__) + 'data/data.csv') as csv_file:
+            reader = csv.reader(csv_file, delimiter=',')
 
             # Init dictionaries
             movies = dict()
