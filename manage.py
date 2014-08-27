@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import os
 
 # Try to get the env var from .env file
@@ -175,7 +174,6 @@ def import_db():
                             movie.add_actor3(actor.id)
                         else:
                             movie.add_actor3(actors[actor3]['id'])
-
 
                     db.session.add(movie)
                     db.session.flush()
