@@ -2,7 +2,7 @@
 from app.api import api
 from flask import json, abort
 from flask.ext.cors import cross_origin
-from urllib import parse
+from urllib.parse import unquote
 # Models
 from app.models.writer import Writer
 
@@ -17,7 +17,7 @@ def get_writer_names():
     # Get all movies from DB
     writers = Writer.query.all()
 
-    # Store writes names in an array
+    # Store writer names in an array
     writers_names = []
     for writer in writers:
         writers_names.append(writer.name)
@@ -35,7 +35,7 @@ def get_writer(name):
     :return: JSON with writer information
     """
     # Get the writer in the Database
-    writer = Writer.query.filter(Writer.name == parse.unquote(name)).first()
+    writer = Writer.query.filter(Writer.name == unquote(name)).first()
 
     # If the writer doesn't exist error 404
     if not writer:
@@ -58,7 +58,7 @@ def get_writer_movies(name):
     :return: JSON with movies information
     """
     # Get the writer in the Database
-    writer = Writer.query.filter(Writer.name == parse.unquote(name)).first()
+    writer = Writer.query.filter(Writer.name == unquote(name)).first()
 
     # If the writer doesn't exist error 404
     if not writer:
@@ -85,7 +85,7 @@ def get_writer_locations(name):
     :return: JSON with locations
     """
     # Get the writer in the Database
-    writer = Writer.query.filter(Writer.name == parse.unquote(name)).first()
+    writer = Writer.query.filter(Writer.name == unquote(name)).first()
 
     # If the writer doesn't exist error 404
     if not writer:
