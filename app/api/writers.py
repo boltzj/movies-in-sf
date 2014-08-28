@@ -9,9 +9,10 @@ from app.models.writer import Writer
 
 @cross_origin()
 @api.route('/writers', methods=['GET'])
-def get_writers_names():
+def get_writer_names():
     """
-    :return: Return a list of all writers names
+    Return all writer names existing in the database
+    :return: JSON with all writer names
     """
     # Get all movies from DB
     writers = Writer.query.all()
@@ -28,7 +29,11 @@ def get_writers_names():
 @cross_origin()
 @api.route('/writers/<name>', methods=['GET'])
 def get_writer(name):
-
+    """
+    Return information about the writer
+    :param name of the writer (URL encoded)
+    :return: JSON with writer information
+    """
     # Get the writer in the Database
     writer = Writer.query.filter(Writer.name == parse.unquote(name)).first()
 
@@ -47,7 +52,11 @@ def get_writer(name):
 @cross_origin()
 @api.route('/writers/<name>/movies', methods=['GET'])
 def get_writer_movies(name):
-
+    """
+    Return the list all writer's movies
+    :param name of the writer (URL encoded)
+    :return: JSON with movies information
+    """
     # Get the writer in the Database
     writer = Writer.query.filter(Writer.name == parse.unquote(name)).first()
 
@@ -70,7 +79,11 @@ def get_writer_movies(name):
 @cross_origin()
 @api.route('/writers/<name>/locations', methods=['GET'])
 def get_writer_locations(name):
-
+    """
+    Return the list of all locations linked to a writer
+    :param name of the writer (URL encoded)
+    :return: JSON with locations
+    """
     # Get the writer in the Database
     writer = Writer.query.filter(Writer.name == parse.unquote(name)).first()
 
