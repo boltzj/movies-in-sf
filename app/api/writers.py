@@ -1,72 +1,94 @@
 # Core
 from app.api import api
-from flask import json, request
-from app import db
+from flask import json, abort
 from flask.ext.cors import cross_origin
-
+from urllib import parse
 # Models
 from app.models.writer import Writer
-from app.models.location import Location
-from app.models.movie import Movie
 
 
-@api.route('/writers', methods=['GET'])
 @cross_origin()
-def get_writers():
+@api.route('/writers', methods=['GET'])
+def get_writers_names():
     """
     :return: Return a list of all writers names
     """
     # Get all movies from DB
     writers = Writer.query.all()
 
-    result = []
+    # Store writes names in an array
+    writers_names = []
     for writer in writers:
-        result.append(writer.name)
+        writers_names.append(writer.name)
 
-    # return result as JSON array
-    return json.JSONEncoder.encode(json.JSONEncoder(), result)
+    # return writers names in a JSON array
+    return json.JSONEncoder.encode(json.JSONEncoder(), writers_names)
 
 
-@api.route('/writer/<int:writer_id>/locations', methods=['GET'])
 @cross_origin()
-def get_writer_locations(writer_id):
-    """
-    :param writer_id: Writer ID
-    :return: Return all locations for a writer
-    """
-    locations = db.session.query(Location).join(Movie).join(Writer).filter(Writer.id == writer_id)
+@api.route('/writers/<name>', methods=['GET'])
+def get_writer(name):
 
-    result = []
-    for location in locations:
-        result.append({
-            'title': location.movie.title,
-            'content': location.fun_facts,
-            'location': location.name,
-            'lat': location.latitude,
-            'lng': location.longitude
+    # Get the writer in the Database
+    writer = Writer.query.filter(Writer.name == parse.unquote(name)).first()
+
+    # If the writer doesn't exist error 404
+    if not writer:
+        return abort(404)
+
+    writer_info = {
+        'name': writer.name
+    }
+
+    # return writer information in a JSON array
+    return json.JSONEncoder.encode(json.JSONEncoder(), writer_info)
+
+
+@cross_origin()
+@api.route('/writers/<name>/movies', methods=['GET'])
+def get_writer_movies(name):
+
+    # Get the writer in the Database
+    writer = Writer.query.filter(Writer.name == parse.unquote(name)).first()
+
+    # If the writer doesn't exist error 404
+    if not writer:
+        return abort(404)
+
+    # Store writer's movies in an array
+    movies = []
+    for movie in writer.movies:
+        movies.append({
+            'title': movie.title,
+            'year': movie.release_year,
         })
 
-    return json.JSONEncoder.encode(json.JSONEncoder(), result)
+    # return movies in a JSON array
+    return json.JSONEncoder.encode(json.JSONEncoder(), movies)
 
 
-@api.route('/writer/name', methods=['GET'])
 @cross_origin()
-def search_locations_by_writer_name():
-    """
-    looks for a the name of writer in a URL parameter q
-    :return: Return all locations for a writer name
-    """
-    query = request.args.get('q')
+@api.route('/writers/<name>/locations', methods=['GET'])
+def get_writer_locations(name):
 
-    # Get all movies from DB
-    writers = Writer.query.filter(Writer.name == query)
+    # Get the writer in the Database
+    writer = Writer.query.filter(Writer.name == parse.unquote(name)).first()
 
-    result = []
-    for writer in writers:
-        result.append({'id': writer.id})
+    # If the writer doesn't exist error 404
+    if not writer:
+        return abort(404)
 
-    if len(result) == 1:
-        return get_writer_locations(result[0]['id'])
-    else:
-        # empty or more than one
-        return json.JSONEncoder.encode(json.JSONEncoder(), result)
+    # Store the locations in an array
+    locations = []
+    for movie in writer.movies:
+        for location in movie.locations:
+            locations.append({
+                'title': movie.title,
+                'content': location.fun_facts,
+                'location': location.name,
+                'lat': location.latitude,
+                'lng': location.longitude
+            })
+
+    # return locations in a JSON array
+    return json.JSONEncoder.encode(json.JSONEncoder(), locations)
