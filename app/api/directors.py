@@ -1,65 +1,107 @@
 # Core
 from app.api import api
-from flask import json, request
-from app import db
+from flask import json, abort
 from flask.ext.cors import cross_origin
-
+from urllib.parse import unquote
 # Models
 from app.models.director import Director
-from app.models.location import Location
-from app.models.movie import Movie
 
 
-# Get a list of all directors names
-@api.route('/directors', methods=['GET'])
 @cross_origin()
-def get_directors():
+@api.route('/directors', methods=['GET'])
+def get_director_names():
+    """
+    Return all director names existing in the database
+    :return: JSON with all director names
+    """
     # Get all movies from DB
     directors = Director.query.all()
 
-    result = []
+    # Store director names in an array
+    director_names = []
     for director in directors:
-        result.append(director.name)
+        director_names.append(director.name)
 
-    # return result as JSON array
-    return json.JSONEncoder.encode(json.JSONEncoder(), result)
+    # return directors names in a JSON array
+    return json.JSONEncoder.encode(json.JSONEncoder(), director_names)
 
 
-# Get all locations for a director
-@api.route('/director/<int:director_id>/locations', methods=['GET'])
 @cross_origin()
-def get_director_locations(director_id):
+@api.route('/directors/<name>', methods=['GET'])
+def get_director(name):
+    """
+    Return information about the director
+    :param name of the director (URL encoded)
+    :return: JSON with director information
+    """
+    # Get the director in the Database
+    director = Director.query.filter(Director.name == unquote(name)).first()
 
-    locations = db.session.query(Location).join(Movie).join(Director).filter(Director.id == director_id)
+    # If the director doesn't exist error 404
+    if not director:
+        return abort(404)
 
-    result = []
-    for location in locations:
-        result.append({
-            'title': location.movie.title,
-            'location': location.name,
-            'content': location.fun_facts,
-            'lat': location.latitude,
-            'lng': location.longitude
+    director_info = {
+        'name': director.name
+    }
+
+    # return director information in a JSON array
+    return json.JSONEncoder.encode(json.JSONEncoder(), director_info)
+
+
+@cross_origin()
+@api.route('/directors/<name>/movies', methods=['GET'])
+def get_director_movies(name):
+    """
+    Return the list all director's movies
+    :param name of the director (URL encoded)
+    :return: JSON with movies information
+    """
+    # Get the director in the Database
+    director = Director.query.filter(Director.name == unquote(name)).first()
+
+    # If the director doesn't exist error 404
+    if not director:
+        return abort(404)
+
+    # Store director's movies in an array
+    movies = []
+    for movie in director.movies:
+        movies.append({
+            'title': movie.title,
+            'year': movie.release_year,
         })
 
-    return json.JSONEncoder.encode(json.JSONEncoder(), result)
+    # return movies in a JSON array
+    return json.JSONEncoder.encode(json.JSONEncoder(), movies)
 
 
-# Get a list of all location for a director
-@api.route('/director/name', methods=['GET'])
 @cross_origin()
-def search_locations_by_director_name():
-    query = request.args.get('q')
+@api.route('/directors/<name>/locations', methods=['GET'])
+def get_director_locations(name):
+    """
+    Return the list of all locations linked to a director
+    :param name of the director (URL encoded)
+    :return: JSON with locations
+    """
+    # Get the director in the Database
+    director = Director.query.filter(Director.name == unquote(name)).first()
 
-    # Get all movies from DB
-    directors = Director.query.filter(Director.name == query)
+    # If the director doesn't exist error 404
+    if not director:
+        return abort(404)
 
-    result = []
-    for director in directors:
-        result.append({'id': director.id})
+    # Store the locations in an array
+    locations = []
+    for movie in director.movies:
+        for location in movie.locations:
+            locations.append({
+                'title': movie.title,
+                'content': location.fun_facts,
+                'location': location.name,
+                'lat': location.latitude,
+                'lng': location.longitude
+            })
 
-    if len(result) == 1:
-        return get_director_locations(result[0]['id'])
-    else:
-        # empty or more than one
-        return json.JSONEncoder.encode(json.JSONEncoder(), result)
+    # return locations in a JSON array
+    return json.JSONEncoder.encode(json.JSONEncoder(), locations)
