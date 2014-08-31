@@ -1,8 +1,9 @@
 # Core
 from app.api import api
-from flask import json, abort
+from flask import abort
 from flask.ext.cors import cross_origin
 from urllib.parse import unquote
+from json import dumps
 # Models
 from app.models.writer import Writer
 
@@ -23,7 +24,7 @@ def get_writer_names():
         writers_names.append(writer.name)
 
     # return writers names in a JSON array
-    return json.JSONEncoder.encode(json.JSONEncoder(), writers_names)
+    return dumps(writers_names)
 
 
 @cross_origin()
@@ -46,7 +47,7 @@ def get_writer(name):
     }
 
     # return writer information in a JSON array
-    return json.JSONEncoder.encode(json.JSONEncoder(), writer_info)
+    return dumps(writer_info)
 
 
 @cross_origin()
@@ -73,7 +74,7 @@ def get_writer_movies(name):
         })
 
     # return movies in a JSON array
-    return json.JSONEncoder.encode(json.JSONEncoder(), movies)
+    return dumps(movies)
 
 
 @cross_origin()
@@ -104,4 +105,4 @@ def get_writer_locations(name):
             })
 
     # return locations in a JSON array
-    return json.JSONEncoder.encode(json.JSONEncoder(), locations)
+    return dumps(locations)

@@ -8,6 +8,7 @@ from flask.ext.cors import cross_origin
 from app.models.movie import Movie
 
 # Utils
+from json import dumps
 from flask import request
 
 
@@ -25,7 +26,7 @@ def get_movies_titles():
     for movie in movies:
         result.append(movie.title)
 
-    return json.JSONEncoder.encode(json.JSONEncoder(), result)
+    return dumps(result)
 
 
 @api.route('/movie/<int:movie_id>', methods=['GET'])
@@ -62,7 +63,7 @@ def get_movie_locations(movie_id):
             'lng': location.longitude
         })
 
-    return json.JSONEncoder.encode(json.JSONEncoder(), result)
+    return dumps(result)
 
 
 @api.route('/movie/name', methods=['GET'])
@@ -85,4 +86,4 @@ def search_locations_by_movie_name():
         return get_movie_locations(result[0]['id'])
     else:
         # empty or more than one
-        return json.JSONEncoder.encode(json.JSONEncoder(), result)
+        return dumps(result)

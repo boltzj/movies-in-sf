@@ -4,6 +4,7 @@ from app.api import api
 from flask import json, request, Response
 from flask.ext.cors import cross_origin
 
+from json import dumps
 # Models
 from app.models.actor import Actor
 from app.models.location import Location
@@ -22,9 +23,9 @@ def get_actors():
     result = []
     for actor in actors:
         result.append(actor.name)
+    # return actor information in a JSON array
+    return dumps(actor_info)
 
-    # return result as JSON array
-    return json.JSONEncoder.encode(json.JSONEncoder(), result)
 
 
 @api.route('/actor/name', methods=['GET'])
@@ -46,7 +47,7 @@ def search_locations_by_actor_name():
         return get_actor_locations(result[0]['id'])
     else:
         # empty or more than one
-        return json.JSONEncoder.encode(json.JSONEncoder(), result)
+        return dumps(result)
 
 
 @api.route('/actor/<int:actor_id>/locations', methods=['GET'])
@@ -99,4 +100,4 @@ def get_actor_locations(actor_id):
             'lng': location.longitude
         })
 
-    return json.JSONEncoder.encode(json.JSONEncoder(), result)
+    return dumps(result)

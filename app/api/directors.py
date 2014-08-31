@@ -1,8 +1,9 @@
 # Core
 from app.api import api
-from flask import json, abort
+from flask import abort
 from flask.ext.cors import cross_origin
 from urllib.parse import unquote
+from json import dumps
 # Models
 from app.models.director import Director
 
@@ -22,8 +23,8 @@ def get_director_names():
     for director in directors:
         director_names.append(director.name)
 
-    # return directors names in a JSON array
-    return json.JSONEncoder.encode(json.JSONEncoder(), director_names)
+    # return directors names in a JSON array string
+    return dumps(director_names)
 
 
 @cross_origin()
@@ -45,8 +46,8 @@ def get_director(name):
         'name': director.name
     }
 
-    # return director information in a JSON array
-    return json.JSONEncoder.encode(json.JSONEncoder(), director_info)
+    # return director information in a JSON object
+    return dumps(director_info)
 
 
 @cross_origin()
@@ -73,7 +74,7 @@ def get_director_movies(name):
         })
 
     # return movies in a JSON array
-    return json.JSONEncoder.encode(json.JSONEncoder(), movies)
+    return dumps(movies)
 
 
 @cross_origin()
@@ -104,4 +105,4 @@ def get_director_locations(name):
             })
 
     # return locations in a JSON array
-    return json.JSONEncoder.encode(json.JSONEncoder(), locations)
+    return dumps(locations)

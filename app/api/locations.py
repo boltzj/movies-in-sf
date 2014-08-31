@@ -1,14 +1,14 @@
 # Core
 from app.api import api
-from flask import json
 from flask.ext.cors import cross_origin
+from json import dumps
 
 # Models
 from app.models.location import Location
 
 
-@api.route('/locations', methods=['GET'])
 @cross_origin()
+@api.route('/locations', methods=['GET'])
 def get_locations():
     """
     :return: Return a list with all locations
@@ -26,4 +26,4 @@ def get_locations():
             'lng': location.longitude
         })
 
-    return json.JSONEncoder.encode(json.JSONEncoder(), result)
+    return dumps(result)
