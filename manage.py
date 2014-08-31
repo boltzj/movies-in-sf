@@ -55,7 +55,7 @@ def import_db():
     db.create_all()
 
     try:
-        with open(os.path.dirname(__file__) + 'data/data.csv') as csv_file:
+        with open((os.path.dirname(__file__) or '.') + '/data/data.csv') as csv_file:
             reader = csv.reader(csv_file, delimiter=',')
 
             # Init dictionaries
@@ -72,7 +72,7 @@ def import_db():
             for row in reader:
 
                 # Read CSV line
-                title = row[0]
+                title = row[0].strip()
                 release_year = row[1]
                 location = row[2]
                 fun_facts = row[3]
