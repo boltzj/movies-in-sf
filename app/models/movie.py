@@ -6,7 +6,7 @@ from flask import jsonify
 # Movie SQLAlchemy model
 class Movie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(255))
+    title = db.Column(db.String(255), unique=True, nullable=False)
     release_year = db.Column(db.Integer)
     production = db.Column(db.String(255))
     distributor = db.Column(db.String(255))
