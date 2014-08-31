@@ -80,9 +80,7 @@ def import_db():
                 distributor = row[5]
                 director = row[6]
                 writer = row[7]
-                actor1 = row[8]
-                actor2 = row[9]
-                actor3 = row[10]
+                movie_actors = [row[8], row[9], row[10]]
 
                 if title not in movies:
                     # Create a new Movie
@@ -100,6 +98,7 @@ def import_db():
                                 'id': director.id,
                                 'name': director.name,
                             }
+
                             # add director_id to movie
                             movie.add_director(director.id)
                         else:
@@ -122,60 +121,26 @@ def import_db():
                         else:
                             movie.add_writer(writers[writer]['id'])
 
-                    # Add actor 1
-                    if '' != actor1:
-                        if actor1 not in actors:
-                            actor = Actor(actor1)
-                            db.session.add(actor)
-                            db.session.flush()
+                    # Add Actors
+                    for actor_name in movie_actors:
+                        if actor_name != '':
+                            if actor_name not in actors:
+                                actor = Actor(actor_name)
+                                db.session.add(actor)
+                                db.session.flush()
 
-                            # Save director information
-                            actors[actor1] = {
-                                'id': actor.id,
-                                'name': actor.name,
-                            }
+                                # Save director information
+                                actors[actor_name] = {
+                                    'id': actor.id,
+                                    'name': actor.name,
+                                }
 
-                            # add director_id to movie
-                            movie.add_actor1(actor.id)
-                        else:
-                            movie.add_actor1(actors[actor1]['id'])
+                                # add actor to movie
+                                movie.add_actor(actor)
+                            else:
+                                movie.add_actor(actor_name)
 
-                    # Add actor 2
-                    if '' != actor2:
-                        if actor2 not in actors:
-                            actor = Actor(actor2)
-                            db.session.add(actor)
-                            db.session.flush()
-
-                            # Save director information
-                            actors[actor2] = {
-                                'id': actor.id,
-                                'name': actor.name,
-                            }
-
-                            # add director_id to movie
-                            movie.add_actor2(actor.id)
-                        else:
-                            movie.add_actor2(actors[actor2]['id'])
-
-                    # Add actor 3
-                    if '' != actor3:
-                        if actor3 not in actors:
-                            actor = Actor(actor3)
-                            db.session.add(actor)
-                            db.session.flush()
-
-                            # Save director information
-                            actors[actor3] = {
-                                'id': actor.id,
-                                'name': actor.name,
-                            }
-
-                            # add director_id to movie
-                            movie.add_actor3(actor.id)
-                        else:
-                            movie.add_actor3(actors[actor3]['id'])
-
+                    # Add Movie in DB
                     db.session.add(movie)
                     db.session.flush()
 

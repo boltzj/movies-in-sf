@@ -1,4 +1,5 @@
 from app import db
+from app.models.actor import Actor
 
 from flask import jsonify
 
@@ -10,14 +11,13 @@ class Movie(db.Model):
     release_year = db.Column(db.Integer)
     production = db.Column(db.String(255))
     distributor = db.Column(db.String(255))
+
     # Relationship
     locations = db.relationship('Location', backref='movie', lazy='dynamic')
+
     # Foreign Keys
     director_id = db.Column(db.Integer, db.ForeignKey('director.id'))
     writer_id = db.Column(db.Integer, db.ForeignKey('writer.id'))
-    actor1_id = db.Column(db.Integer, db.ForeignKey('actor.id'))
-    actor2_id = db.Column(db.Integer, db.ForeignKey('actor.id'))
-    actor3_id = db.Column(db.Integer, db.ForeignKey('actor.id'))
 
     def __init__(self, title, release_year, production, distributor):
         self.title = title
@@ -31,14 +31,16 @@ class Movie(db.Model):
     def add_writer(self, writer_id):
         self.writer_id = writer_id
 
-    def add_actor1(self, actor1_id):
-        self.actor1_id = actor1_id
-
-    def add_actor2(self, actor2_id):
-        self.actor2_id = actor2_id
-
-    def add_actor3(self, actor3_id):
-        self.actor3_id = actor3_id
+    def add_actor(self, actor):
+        # If actor is a string, try to find the actor in DB
+        if actor.__class__ == str:
+            actor = Actor.query.filter(Actor.name == actor).first()
+        # Add actor to the movie
+        if actor.__class__ == Actor:
+            self.actors.append(actor)
+        # Raise a Value error if not found or invalid
+        else:
+            raise ValueError
 
     def to_json(self):
         return jsonify({
