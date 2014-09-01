@@ -1,103 +1,108 @@
 # Core
-from app import db
 from app.api import api
-from flask import json, request, Response
+from flask import request, abort
 from flask.ext.cors import cross_origin
-
+from urllib.parse import unquote
 from json import dumps
 # Models
 from app.models.actor import Actor
-from app.models.location import Location
-from app.models.movie import Movie
 
 
-@api.route('/actors', methods=['GET'])
 @cross_origin()
-def get_actors():
+@api.route('/actors', methods=['GET'])
+def get_actor_names():
     """
+    Return all actor name existing in the database
     :return: List of all actors names
     """
-    # Get all movies from DB
+    # Get all actors from DB
     actors = Actor.query.all()
 
-    result = []
+    # Store actor names in an array
+    actor_names = []
     for actor in actors:
-        result.append(actor.name)
-    # return actor information in a JSON array
+        actor_names.append(actor.name)
+
+    # return actor names in a JSON array
+    return dumps(actor_names)
+
+
+@cross_origin()
+@api.route('/actors/<name>', methods=['GET'])
+def get_actor(name):
+    """
+    Return information about the actor
+    :param name of the actor (URL encoded)
+    :return: JSON with actor information
+    """
+    # Get the actor in the Database
+    actor = Actor.query.filter(Actor.name == unquote(name)).first()
+
+    # If the actor doesn't exist return 404
+    if not actor:
+        return abort(404)
+
+    actor_info = {
+        'name': actor.name
+    }
+
+    # return actor information in a JSON object
     return dumps(actor_info)
 
 
-
-@api.route('/actor/name', methods=['GET'])
 @cross_origin()
-def search_locations_by_actor_name():
+@api.route('/actors/<name>/movies', methods=['GET'])
+def get_actor_movies(name):
     """
-    :return: List of all location for an actor name
+    Return the list all actor's movies
+    :param name of the actor (URL encoded)
+    :return: JSON with movies information
     """
-    query = request.args.get('q')
+    # Get the actor in the Database
+    actor = Actor.query.filter(Actor.name == unquote(name)).first()
 
-    # Get all movies from DB
-    actors = Actor.query.filter(Actor.name == query)
+    # If the actor doesn't exist error 404
+    if not actor:
+        return abort(404)
 
-    result = []
-    for actor in actors:
-        result.append({'id': actor.id})
+    # Store actor's movies in an array
+    movies = []
+    for movie in actor.movies:
+        movies.append({
+            'title': movie.title,
+            'year': movie.release_year,
+        })
 
-    if len(result) == 1:
-        return get_actor_locations(result[0]['id'])
-    else:
-        # empty or more than one
-        return dumps(result)
+    # return movies in a JSON array
+    return dumps(movies)
 
 
-@api.route('/actor/<int:actor_id>/locations', methods=['GET'])
 @cross_origin()
-def get_actor_locations(actor_id):
+@api.route('/actors/<name>/locations', methods=['GET'])
+def get_actor_locations(name):
     """
-    Return the list of all locations for an actor
-    :param actor_id:
-    :return: Get all locations for an actor
+    Return the list of all locations linked to a actor
+    :param name of the actor (URL encoded)
+    :return: JSON with locations
     """
+    # Get the actor in the Database
+    actor = Actor.query.filter(Actor.name == unquote(name)).first()
 
-    result = []
+    # If the actor doesn't exist error 404
+    if not actor:
+        return abort(404)
 
-    locations = db.session.query(Location)\
-        .join(Movie)\
-        .join(Actor, Movie.actor1_id == Actor.id)\
-        .filter(Actor.id == actor_id)
-    for location in locations:
-        result.append({
-            'title': location.movie.title,
-            'location': location.name,
-            'content': location.fun_facts,
-            'lat': location.latitude,
-            'lng': location.longitude
-        })
+    # Store the locations in an array
+    locations = []
+    for movie in actor.movies:
+        for location in movie.locations:
+            locations.append({
+                'title': movie.title,
+                'content': location.fun_facts,
+                'location': location.name,
+                'lat': location.latitude,
+                'lng': location.longitude
+            })
 
-    locations = db.session.query(Location)\
-        .join(Movie)\
-        .join(Actor, Movie.actor2_id == Actor.id)\
-        .filter(Actor.id == actor_id)
-    for location in locations:
-        result.append({
-            'title': location.movie.title,
-            'location': location.name,
-            'content': location.fun_facts,
-            'lat': location.latitude,
-            'lng': location.longitude
-        })
-
-    locations = db.session.query(Location)\
-        .join(Movie)\
-        .join(Actor, Movie.actor3_id == Actor.id)\
-        .filter(Actor.id == actor_id)
-    for location in locations:
-        result.append({
-            'title': location.movie.title,
-            'location': location.name,
-            'content': location.fun_facts,
-            'lat': location.latitude,
-            'lng': location.longitude
-        })
-
-    return dumps(result)
+    # return locations in a JSON array
+    return dumps(locations)
