@@ -2,7 +2,6 @@
 from app.api import api
 from flask.ext.cors import cross_origin
 from json import dumps
-
 # Models
 from app.models.location import Location
 

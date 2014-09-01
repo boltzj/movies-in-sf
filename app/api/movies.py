@@ -1,12 +1,8 @@
-import json
-
 # Core
 from app.api import api
 from flask.ext.cors import cross_origin
-
 # Models
 from app.models.movie import Movie
-
 # Utils
 from json import dumps
 from flask import request
