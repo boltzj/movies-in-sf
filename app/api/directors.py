@@ -42,12 +42,8 @@ def get_director(name):
     if not director:
         return abort(404)
 
-    director_info = {
-        'name': director.name
-    }
-
     # return director information in a JSON object
-    return dumps(director_info)
+    return dumps(director.get_information())
 
 
 @cross_origin()
@@ -68,10 +64,7 @@ def get_director_movies(name):
     # Store director's movies in an array
     movies = []
     for movie in director.movies:
-        movies.append({
-            'title': movie.title,
-            'year': movie.release_year,
-        })
+        movies.append(movie.get_information())
 
     # return movies in a JSON array
     return dumps(movies)
@@ -96,13 +89,7 @@ def get_director_locations(name):
     locations = []
     for movie in director.movies:
         for location in movie.locations:
-            locations.append({
-                'title': movie.title,
-                'content': location.fun_facts,
-                'location': location.name,
-                'lat': location.latitude,
-                'lng': location.longitude
-            })
+            locations.append(location.get_information())
 
     # return locations in a JSON array
     return dumps(locations)

@@ -42,6 +42,12 @@ class Movie(db.Model):
         else:
             raise ValueError
 
+    def get_information(self):
+        return {
+            'title': self.title,
+            'year': self.release_year,
+        }
+
     def to_json(self):
         return jsonify({
             'id': self.id,

@@ -10,3 +10,8 @@ class Director(db.Model):
 
     def __init__(self, name):
         self.name = name
+
+    def get_information(self):
+        return {
+            'name': self.name
+        }

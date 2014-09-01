@@ -42,12 +42,8 @@ def get_writer(name):
     if not writer:
         return abort(404)
 
-    writer_info = {
-        'name': writer.name
-    }
-
     # return writer information in a JSON array
-    return dumps(writer_info)
+    return dumps(writer.get_information())
 
 
 @cross_origin()
@@ -58,7 +54,7 @@ def get_writer_movies(name):
     :param name of the writer (URL encoded)
     :return: JSON with movies information
     """
-    # Get the writer in the Database
+    # Get the writer in the Database (Names are unique)
     writer = Writer.query.filter(Writer.name == unquote(name)).first()
 
     # If the writer doesn't exist error 404
@@ -68,10 +64,7 @@ def get_writer_movies(name):
     # Store writer's movies in an array
     movies = []
     for movie in writer.movies:
-        movies.append({
-            'title': movie.title,
-            'year': movie.release_year,
-        })
+        movies.append(movie.get_information())
 
     # return movies in a JSON array
     return dumps(movies)
@@ -96,13 +89,7 @@ def get_writer_locations(name):
     locations = []
     for movie in writer.movies:
         for location in movie.locations:
-            locations.append({
-                'title': movie.title,
-                'content': location.fun_facts,
-                'location': location.name,
-                'lat': location.latitude,
-                'lng': location.longitude
-            })
+            locations.append(location.get_information())
 
     # return locations in a JSON array
     return dumps(locations)

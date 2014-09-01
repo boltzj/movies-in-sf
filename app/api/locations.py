@@ -17,12 +17,6 @@ def get_locations():
 
     result = []
     for location in locations:
-        result.append({
-            'title': location.movie.title,
-            'location': location.name,
-            'content': location.fun_facts,
-            'lat': location.latitude,
-            'lng': location.longitude
-        })
+        result.append(location.get_information())
 
     return dumps(result)

@@ -42,12 +42,8 @@ def get_actor(name):
     if not actor:
         return abort(404)
 
-    actor_info = {
-        'name': actor.name
-    }
-
     # return actor information in a JSON object
-    return dumps(actor_info)
+    return dumps(actor.get_information())
 
 
 @cross_origin()
@@ -68,10 +64,7 @@ def get_actor_movies(name):
     # Store actor's movies in an array
     movies = []
     for movie in actor.movies:
-        movies.append({
-            'title': movie.title,
-            'year': movie.release_year,
-        })
+        movies.append(movie.get_information())
 
     # return movies in a JSON array
     return dumps(movies)
@@ -96,13 +89,7 @@ def get_actor_locations(name):
     locations = []
     for movie in actor.movies:
         for location in movie.locations:
-            locations.append({
-                'title': movie.title,
-                'content': location.fun_facts,
-                'location': location.name,
-                'lat': location.latitude,
-                'lng': location.longitude
-            })
+            locations.append(location.get_information())
 
     # return locations in a JSON array
     return dumps(locations)

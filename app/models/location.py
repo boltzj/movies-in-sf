@@ -28,6 +28,15 @@ class Location(db.Model):
         self.fun_facts = fun_facts
         self.movie_id = movie_id
 
+    def get_information(self):
+        return {
+            'title': self.movie.title,
+            'content': self.fun_facts,
+            'location': self.name,
+            'lat': self.latitude,
+            'lng': self.longitude
+        }
+
     def geocode(self, attempt):
         geocoder = GoogleGeocoder()
 
