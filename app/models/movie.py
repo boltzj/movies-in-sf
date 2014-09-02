@@ -1,8 +1,6 @@
 from app import db
 from app.models.actor import Actor
 
-from flask import jsonify
-
 
 # Movie SQLAlchemy model
 class Movie(db.Model):
@@ -48,11 +46,3 @@ class Movie(db.Model):
             'year': self.release_year,
         }
 
-    def to_json(self):
-        return jsonify({
-            'id': self.id,
-            'Title': self.title,
-            'Release Year': self.release_year,
-            'Production Company': self.production,
-            'Distributor': self.distributor,
-        })

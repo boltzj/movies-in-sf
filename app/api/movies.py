@@ -4,82 +4,68 @@ from flask.ext.cors import cross_origin
 # Models
 from app.models.movie import Movie
 # Utils
+from flask import abort
+from urllib.parse import unquote
 from json import dumps
-from flask import request
 
 
-@api.route('/movies', methods=['GET'])
 @cross_origin()
-def get_movies_titles():
+@api.route('/movies', methods=['GET'])
+def get_movie_titles():
     """
-    Return a list of all movies titles
+    Return all movie titles existing in the database
+    :return: JSON with all movie titles
     """
     # Get all movies from DB
     movies = Movie.query.all()
 
-    # Store the movies title in an array
-    result = []
+    # Store movie titles in an array
+    movie_titles = []
     for movie in movies:
-        result.append(movie.title)
+        movie_titles.append(movie.title)
 
-    return dumps(result)
+    # return movies titles in a JSON array string
+    return dumps(movie_titles)
 
 
-@api.route('/movie/<int:movie_id>', methods=['GET'])
 @cross_origin()
-def get_movie_by_id(movie_id):
+@api.route('/movies/<title>', methods=['GET'])
+def get_movie(title):
     """
-    Return the information about a movie
-    :param movie_id:
-    :return: movie information
+    Return information about the movie
+    :param title of the movie (URL encoded)
+    :return: JSON with movie information
     """
-    # Request DB for movie or raise 404 Error
-    movie = Movie.query.get_or_404(movie_id)
+    # Get the movie in the Database
+    movie = Movie.query.filter(Movie.title == unquote(title)).first()
 
-    return movie.to_json()
+    # If the movie doesn't exist error 404
+    if not movie:
+        return abort(404)
+
+    # return movie information in a JSON object
+    return dumps(movie.get_information())
 
 
-@api.route('/movie/<int:movie_id>/locations', methods=['GET'])
 @cross_origin()
-def get_movie_locations(movie_id):
+@api.route('/movies/<title>/locations', methods=['GET'])
+def get_movie_locations(title):
     """
-    Get all locations for a movie
+    Return the list of all locations linked to a movie
+    :param title of the movie (URL encoded)
+    :return: JSON with locations
     """
-    # Request DB for movie or raise 404 Error
-    movie = Movie.query.get_or_404(movie_id)
+    # Get the movie in the Database
+    movie = Movie.query.filter(Movie.title == unquote(title)).first()
 
-    # Store the location in an array
-    result = []
+    # If the movie doesn't exist error 404
+    if not movie:
+        return abort(404)
+
+    # Store the locations in an array
+    locations = []
     for location in movie.locations:
-        result.append({
-            'title': movie.title,
-            'location': location.name,
-            'content': location.fun_facts,
-            'lat': location.latitude,
-            'lng': location.longitude
-        })
+        locations.append(location.get_information())
 
-    return dumps(result)
-
-
-@api.route('/movie/name', methods=['GET'])
-@cross_origin()
-def search_locations_by_movie_name():
-    """
-    Take a name of a movie and return all location for a movie
-    :return:
-    """
-    query = request.args.get('q')
-
-    # Get all movies from DB
-    movies = Movie.query.filter(Movie.title == query)
-
-    result = []
-    for movie in movies:
-        result.append({'id': movie.id})
-
-    if len(result) == 1:
-        return get_movie_locations(result[0]['id'])
-    else:
-        # empty or more than one
-        return dumps(result)
+    # return locations in a JSON array
+    return dumps(locations)
