@@ -4,3 +4,5 @@ pymysql
 flask-cors
 flask-script
 python-googlegeocoder
+gunicorn
+psycopg2==2.5.1
