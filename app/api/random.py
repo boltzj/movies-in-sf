@@ -16,7 +16,7 @@ def get_random_objects(cls, bulk=10):
     :param bulk: Quantity of random objects (Default 10)
     :return:
     """
-    if not issubclass(cls, db.Model):
+    if not issubclass(cls, db.Model) and not hasattr(cls, "get_information"):
         raise ValueError
 
     # Get a random id with bulk size offset
@@ -63,7 +63,7 @@ def get_random_movies():
 @api.route('/random/movies/locations', methods=['GET'])
 def get_random_movies_location():
     """
-    :return: Return some random movies
+    :return: Return some random movie locations
     """
     locations = []
     for movie in get_random_objects(Movie):
