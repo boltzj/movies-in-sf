@@ -22,7 +22,7 @@ In your favorite terminal:
 
 Create a new virtual environment:  
 ```
-$ virtualenv venv
+$ virtualenv -p `which python3` venv
 ```
 
 Activate it (You must source the virtualenv environment for each terminal session where you wish to run your app):  
@@ -61,8 +61,8 @@ $ pip install -r requirements/prod.txt
 
 set the environment variables or write it in an '.env' file in the top folder:  
 ```
-$ cat .env > FLASK_CONFIG=production
-$ cat .env >> "DATABASE_URL={protocol}+{driver}://{user}:{password}@{host}/{database}"
+FLASK_CONFIG=production
+DATABASE_URL={protocol}[+{driver}]://{user}:{password}@{host}/{database}"
 ```
 
 Run the gunicorn server:  
@@ -88,12 +88,12 @@ Provisioning database
 
 Promote database
 
+add a Procfile
+
 Push project on heroku
 ```
 $ git push heroku master
 ```
-
-Procfile
 
 Add a dyno
 
