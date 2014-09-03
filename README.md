@@ -1,58 +1,152 @@
-# sf-movies
----
+# movies-in-sf
 
 ## Description
----
 
-Python / Flask / SQLAlchemy / API / SF_DATA
+Python / Flask / SQLAlchemy
 
 **SF movies locations API implementation**
 
-**Build with Python and Flask**
+**Build with _Python_ and _Flask_**
 
 
 ## Installation
----
-To load data in the database:  
-In a shell run :  
+
+### Local Installation
+
+#### Requirements
+ - python3.4.1  
+ - virtualenv [install virtualenv](http://flask.pocoo.org/docs/0.10/installation/#virtualenv "Flask doc")  
+
+#### Let's go
+In your favorite terminal:  
+
+Create a new virtual environment:  
 ```
-python manage.py import_db
+$ virtualenv venv
 ```
 
+Activate it (You must source the virtualenv environment for each terminal session where you wish to run your app):  
+```
+. venv/bin/activate
+```
+
+Install the requirements:  
+```
+$ pip install -r requirements.txt
+```
+
+Import data from the cvs file in the database:      
+```
+$ python manage.py import_db
+```
+
+Run the tests (Optional):
+```
+$ python manage.py test
+```
+
+Run the dev server:
+```
+$ python manage.py runserver
+```
+
+
+### Production deploy
+To run the application with gunicorn:  
+
+Install production requirements:  
+```
+$ pip install -r requirements/prod.txt
+```
+
+set the environment variables or write it in an '.env' file in the top folder:  
+```
+$ cat .env > FLASK_CONFIG=production
+$ cat .env >> "DATABASE_URL={protocol}+{driver}://{user}:{password}@{host}/{database}"
+```
+
+Run the gunicorn server:  
+```
+$ gunicorn manage:app
+```
+
+### Heroku deploy
+
+#### Prerequisite
+
+    Install Toolbelt
+    
+    Heroku Login
+    
+    Upload ssh public key
+
+#### Let's go
+
+Create app
+
+Provisioning database
+
+Promote database
+
+Push project on heroku
+```
+$ git push heroku master
+```
+
+Procfile
+
+Add a dyno
+
+#### More info
+
+[Deploying Python on Heroku](http://devcenter.heroku.com/articles/python "Getting Started with Python on Heroku")
 
 ## API Routes
----
 
-### /movies
-    List all movies names
+#### /locations
+	Get all locations
 
-### /movie/<int:movie_id>
-    Get information for a movie
+#### /movies
+    Get all movie titles
+
+#### /movies/\<name>
+	Get information about a movie
+
+#### /movies/\<name>/locations
+	Get all locations for a movie
+
+#### /directors
+    Get all director names
     
-### /movie/<int:movie_id>/locations
-    Get Locations for a movie
+#### /directors/\<name>
+	Get information about a director
+
+#### /directors/\<name>/movies
+	Get all director movies
+
+#### /directors/\<name>/locations
+	Get all director's movie locations
+
+#### /writers
+    Get all writer names
     
-### /movie/name
+#### /writers/\<name>
+	Get information about a writer
 
-### /directors
-    List all directors names
+#### /writers/\<name>/movies
+	Get all writer's movies
+
+#### /writers/\<name>/locations
+	Get all writer's movie locations
+
+#### /actors
+    Get all actors names
     
-### /director/<int:director_id>/locations
+#### /actors/\<name>
+	Get information about an actor
 
-### /director/name
+#### /actors/\<name>/movies
+	Get all actor's movies
 
-### /writers
-    List all writers names
-    
-### /writer/<int:writer_id>/locations
-
-### /writer/name
-
-### /actors
-    List all actors names
-    
-### /actor/<int:actor_id>/locations
-
-### /actor/name
-
-### /locations
+#### /actors/\<name>/locations
+	Get all actor's movie locations
