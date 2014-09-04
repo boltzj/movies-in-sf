@@ -4,7 +4,7 @@ from sqlalchemy import Table, Column, Integer, ForeignKey
 
 class Actor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), unique=True, nullable=False)
+    name = db.Column(db.String(255), index=True, unique=True, nullable=False)
 
     # Many-to-Many relationship Actor / Movie
     movies = db.relationship("Movie",
