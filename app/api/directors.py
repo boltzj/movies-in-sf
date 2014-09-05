@@ -15,7 +15,7 @@ def get_director_names():
     Return all director names existing in the database
     :return: JSON with all director names
     """
-    # Get all movies from DB
+    # Get all directors from DB
     directors = Director.query.all()
 
     # Store director names in an array
