@@ -12,11 +12,15 @@ import random
 
 def get_random_objects(cls, bulk=10):
     """
-    :param cls: Class Object subclass of db.Model
+    :param cls: Class Object subclass of db.Model and implement get_information()
     :param bulk: Quantity of random objects (Default 10)
     :return:
     """
-    if not issubclass(cls, db.Model) and not hasattr(cls, "get_information"):
+    # cls must be a subclass of a SQLAlchemy Model
+    if not issubclass(cls, db.Model):
+        raise ValueError
+    # cls must have a method get_information
+    if not callable(getattr(cls, "get_information", None)):
         raise ValueError
 
     # Get a random id with bulk size offset
