@@ -1,12 +1,11 @@
 # Core
 from app.api import api
-from flask.ext.cors import cross_origin
 # Models
 from app.models.movie import Movie
 # Utils
-from flask import abort
+from flask import abort, jsonify
+from flask.ext.cors import cross_origin
 from urllib.parse import unquote
-from json import dumps
 
 
 @cross_origin()
@@ -25,7 +24,7 @@ def get_movie_titles():
         movie_titles.append(movie.title)
 
     # return movies titles in a JSON array string
-    return dumps(movie_titles)
+    return jsonify(titles=movie_titles)
 
 
 @cross_origin()
@@ -44,7 +43,7 @@ def get_movie(title):
         return abort(404)
 
     # return movie information in a JSON object
-    return dumps(movie.get_information())
+    return jsonify(movie=movie.get_information())
 
 
 @cross_origin()
@@ -68,4 +67,4 @@ def get_movie_locations(title):
         locations.append(location.get_information())
 
     # return locations in a JSON array
-    return dumps(locations)
+    return jsonify(locations=locations)

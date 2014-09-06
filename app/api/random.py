@@ -1,8 +1,8 @@
 # Core
 from app import db
 from app.api import api
+from flask import jsonify
 from flask.ext.cors import cross_origin
-from json import dumps
 # Models
 from app.models.location import Location
 from app.models.movie import Movie
@@ -27,14 +27,14 @@ def get_random_objects(cls, bulk=10):
     rand = random.randrange(bulk, cls.query.count()) + 1 - bulk
 
     # Store results object in a list
-    result = []
+    results = []
     for object_id in range(rand, rand + bulk):
         # Get the object
         db_object = cls.query.get(object_id)
         # Add location information
-        result.append(db_object)
+        results.append(db_object)
 
-    return result
+    return results
 
 
 @cross_origin()
@@ -47,7 +47,7 @@ def get_random_locations():
     for location in get_random_objects(Location):
         locations.append(location.get_information())
 
-    return dumps(locations)
+    return jsonify(locations=locations)
 
 
 @cross_origin()
@@ -60,7 +60,7 @@ def get_random_movies():
     for movie in get_random_objects(Movie):
         movies.append(movie.get_information())
 
-    return dumps(movies)
+    return jsonify(movies=movies)
 
 
 @cross_origin()
@@ -74,4 +74,4 @@ def get_random_movies_location():
         for location in movie.locations:
             locations.append(location.get_information())
 
-    return dumps(locations)
+    return jsonify(locations=locations)

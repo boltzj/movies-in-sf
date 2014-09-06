@@ -1,7 +1,7 @@
 # Core
 from app.api import api
+from flask import jsonify
 from flask.ext.cors import cross_origin
-from json import dumps
 # Models
 from app.models.location import Location
 
@@ -19,4 +19,4 @@ def get_locations():
     for location in locations:
         result.append(location.get_information())
 
-    return dumps(result)
+    return jsonify(locations=result)
