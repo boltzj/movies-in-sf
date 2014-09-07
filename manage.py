@@ -51,6 +51,8 @@ def import_db():
     from app.models.writer import Writer
     from app.models.actor import Actor
 
+    from app.utils.geocoder import location_geocode
+
     db.drop_all()
     db.create_all()
 
@@ -155,15 +157,16 @@ def import_db():
                     # Create new Location if not empty
                     if '' != location:
                         new_location = Location(location, fun_facts, movie.id)
-                        new_location.geocode(0)
+                        location_geocode(new_location, attempt=0)
                         db.session.add(new_location)
 
                 # Movie already exists, create new Location
                 else:
                     if '' != location:
                         new_location = Location(location, fun_facts, movies[title]['id'])
-                        new_location.geocode(0)
+                        location_geocode(new_location, attempt=0)
                         db.session.add(new_location)
+
     except FileNotFoundError:
         print("File : `" + os.path.dirname(__file__) + '/data/data.csv' + '` not found')
 

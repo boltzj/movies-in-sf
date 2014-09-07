@@ -1,17 +1,4 @@
 from app import db
-from googlegeocoder import GoogleGeocoder
-import sys
-import logging
-import time
-
-# Logging
-root = logging.getLogger()
-root.setLevel(logging.DEBUG)
-ch = logging.StreamHandler(sys.stdout)
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-ch.setFormatter(formatter)
-root.addHandler(ch)
 
 
 class Location(db.Model):
@@ -36,26 +23,3 @@ class Location(db.Model):
             'lat': self.latitude,
             'lng': self.longitude
         }
-
-    def geocode(self, attempt):
-        geocoder = GoogleGeocoder()
-
-        try:
-            logging.info('Try to geocode ' + self.name + ', San Francisco, CA')
-            search = geocoder.get(self.name + ', San Francisco, CA')
-
-            if search.__len__() > 0:
-                logging.info(search)
-                self.latitude = search[0].geometry.location.lat
-                self.longitude = search[0].geometry.location.lng
-            else:
-                logging.info('No result for ' + self.name + ', San Francisco, CA')
-
-            db.session.commit()
-
-        except ValueError:
-            # FIXME: Handle ValueError: OVER_QUERY_LIMIT (ValueError(data["status"])
-            logging.warning('Google geocoder : ValueError')
-            time.sleep(1)
-            if attempt < 5:
-                self.geocode(attempt + 1)
