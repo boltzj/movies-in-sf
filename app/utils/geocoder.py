@@ -30,9 +30,10 @@ def location_geocode(location, attempt):
     if isinstance(location.__class__, Location):
         raise ValueError
 
+    location_full_name = location.name + ', San Francisco, CA'
+
     try:
-        location_full_name = location.name + ', San Francisco, CA'
-        # logging.info('Try to geocode ' + location_full_name)
+        logging.info('Geocoding: ' + location_full_name)
 
         # Get result from Google Maps API
         search = geocoder.get(location_full_name)
@@ -63,3 +64,13 @@ def location_geocode(location, attempt):
 
     # FIXME : geocoder.get() raise urllib.error.HTTPError: HTTP Error 500: Internal Server Error
     # except urllib.error.HTTPError as http_error:
+    # urllib.error.URLError: <urlopen error [Errno 8] nodename nor servname provided, or not known>
+
+
+def geocode_database_locations():
+    # Get locations from database
+    locations = Location.query.all()
+
+    for location in locations:
+        # Get position from Google Maps API
+        location_geocode(location, attempt=1)
