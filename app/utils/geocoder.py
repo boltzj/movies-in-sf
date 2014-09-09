@@ -49,12 +49,12 @@ def location_geocode(location, attempt):
         msg = str(error)
 
         if msg == 'OVER_QUERY_LIMIT':
-            logging.info('OVER_QUERY_LIMIT, sleep for one second')
-            time.sleep(1)
-            if attempt < 5:
+            logging.info('OVER_QUERY_LIMIT, waiting 2 seconds, attempt: ' + str(attempt))
+            time.sleep(2)
+            if attempt < 3:
                 location_geocode(location, attempt + 1)
             else:
-                logging.error('Check your daily quota...')
+                raise Exception('OVER_QUOTA_LIMIT')
 
         elif msg == 'ZERO_RESULTS':
             logging.warning('No result for: ' + location_full_name)
@@ -71,6 +71,12 @@ def geocode_database_locations():
     # Get locations from database
     locations = Location.query.all()
 
-    for location in locations:
-        # Get position from Google Maps API
-        location_geocode(location, attempt=1)
+    try:
+        for location in locations:
+            # Get position from Google Maps API
+            location_geocode(location, attempt=1)
+    except Exception as error:
+        msg = str(error)
+
+        if msg == 'OVER_QUOTA_LIMIT':
+            logging.error('Google Maps API : Daily limit has been reached')
