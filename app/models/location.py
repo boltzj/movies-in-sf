@@ -17,7 +17,7 @@ class Location(db.Model):
 
     def get_information(self):
         return {
-            'title': self.movie.title,
+            'name': self.movie.name,
             'content': self.fun_facts,
             'location': self.name,
             'lat': self.latitude,

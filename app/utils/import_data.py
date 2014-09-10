@@ -34,14 +34,14 @@ def import_data_from_csv(file_path):
             for row in reader:
 
                 # Read CSV line
-                title = row[0].strip()
+                name = row[0].strip()
                 location = row[2]
                 fun_facts = row[3]
 
                 # Movie already exists create new location
-                if title in movies:
+                if name in movies:
                     if '' != location:
-                        new_location = Location(location, fun_facts, movies[title]['id'])
+                        new_location = Location(location, fun_facts, movies[name]['id'])
                         db.session.add(new_location)
                     continue
 
@@ -54,7 +54,7 @@ def import_data_from_csv(file_path):
                 movie_actors = [row[8], row[9], row[10]]
 
                 # Create a new Movie
-                movie = Movie(title, release_year, production, distributor)
+                movie = Movie(name, release_year, production, distributor)
 
                 # Add director
                 if '' != director:
@@ -114,13 +114,7 @@ def import_data_from_csv(file_path):
                 db.session.add(movie)
                 db.session.flush()
 
-                movies[title] = {
-                    'Title': title,
-                    'Release Year': release_year,
-                    'Production Company': production,
-                    'Distributor': distributor,
-                    'id': movie.id
-                }
+                movies[name] = {'id': movie.id}
 
                 # Create new Location if not empty
                 if '' != location:

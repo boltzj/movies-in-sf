@@ -10,33 +10,33 @@ from urllib.parse import unquote
 
 @cross_origin()
 @api.route('/movies', methods=['GET'])
-def get_movie_titles():
+def get_movie_names():
     """
-    Return all movie titles existing in the database
-    :return: JSON with all movie titles
+    Return all movie names existing in the database
+    :return: JSON with all movie names
     """
     # Get all movies from DB
     movies = Movie.query.all()
 
-    # Store movie titles in an array
-    movie_titles = []
+    # Store movie names in an array
+    movie_names = []
     for movie in movies:
-        movie_titles.append(movie.title)
+        movie_names.append(movie.name)
 
-    # return movies titles in a JSON array string
-    return jsonify(titles=movie_titles)
+    # return movies names in a JSON array string
+    return jsonify(names=movie_names)
 
 
 @cross_origin()
-@api.route('/movies/<title>', methods=['GET'])
-def get_movie(title):
+@api.route('/movies/<name>', methods=['GET'])
+def get_movie(name):
     """
     Return information about the movie
-    :param title of the movie (URL encoded)
+    :param name of the movie (URL encoded)
     :return: JSON with movie information
     """
     # Get the movie in the Database
-    movie = Movie.query.filter(Movie.title == unquote(title)).first()
+    movie = Movie.query.filter(Movie.name == unquote(name)).first()
 
     # If the movie doesn't exist error 404
     if not movie:
@@ -47,15 +47,15 @@ def get_movie(title):
 
 
 @cross_origin()
-@api.route('/movies/<title>/locations', methods=['GET'])
-def get_movie_locations(title):
+@api.route('/movies/<name>/locations', methods=['GET'])
+def get_movie_locations(name):
     """
     Return the list of all locations linked to a movie
-    :param title of the movie (URL encoded)
+    :param name of the movie (URL encoded)
     :return: JSON with locations
     """
     # Get the movie in the Database
-    movie = Movie.query.filter(Movie.title == unquote(title)).first()
+    movie = Movie.query.filter(Movie.name == unquote(name)).first()
 
     # If the movie doesn't exist error 404
     if not movie:
