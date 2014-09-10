@@ -11,7 +11,7 @@ root = logging.getLogger()
 root.setLevel(logging.DEBUG)
 ch = logging.StreamHandler(sys.stdout)
 ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter('%(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 root.addHandler(ch)
 
@@ -38,7 +38,7 @@ def location_geocode(location, attempt):
         # Get result from Google Maps API
         search = geocoder.get(location_full_name)
 
-        if search.__len__() > 0:
+        if len(search) > 0:
             logging.info(search[0])
             location.latitude = search[0].geometry.location.lat
             location.longitude = search[0].geometry.location.lng
