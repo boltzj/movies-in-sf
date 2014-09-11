@@ -39,7 +39,7 @@ def test():
 
 # Import data from csv in the database
 @manager.command
-def import_db():
+def import_db(force=False):
     """
     Import database data from cvs file
     :return:
@@ -56,7 +56,7 @@ def import_db():
     import_data_from_csv(csv_path)
 
     # Geocode locations in database
-    geocode_database_locations()
+    geocode_database_locations(force)
 
 
 # Run a Python shell with the App context

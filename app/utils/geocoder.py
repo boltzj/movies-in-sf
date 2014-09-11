@@ -67,16 +67,16 @@ def location_geocode(location, attempt):
     # urllib.error.URLError: <urlopen error [Errno 8] nodename nor servname provided, or not known>
 
 
-def geocode_database_locations(forceAll=False):
+def geocode_database_locations(force=False):
     """
     Geocode location in database
     :param all: Boolean to force geocode every location
     """
     # Create query
-    if not forceAll:
-        location_query = Location.query.filter(Location.latitude == None or Location.longitude == None)
-    else:
+    if force:
         location_query = Location.query
+    else:
+        location_query = Location.query.filter(Location.latitude == None)
 
     # Execute query
     locations = location_query.all()
