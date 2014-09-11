@@ -7,27 +7,51 @@ from app.models.writer import Writer
 from app.models.actor import Actor
 
 
+def import_data_from_database():
+    """
+    Build dictionaries from database
+    :return:
+    """
+    # Init dictionaries
+    movies, actors, writers, directors, locations = {}, {}, {}, {}, {}
+
+    for movie in Movie.query.all():
+        # Save director information
+        movies[movie.name] = movie.id
+
+    for actor in Actor.query.all():
+        # Save actor information
+        actors[actor.name] = actor.id
+
+    for writer in Writer.query.all():
+        # Save writer information
+        writers[writer.name] = writer.id
+
+    for director in Director.query.all():
+        # Save director information
+        directors[director.name] = director.id
+
+    for location in Location.query.all():
+        locations[(location, location.movie_id)] = location.id
+
+    return movies, actors, writers, directors, locations
+
+
 def import_data_from_csv(file_path):
     """
     Import data from a csv file into database
     :return:
     """
 
-    db.drop_all()
-    db.create_all()
-
     try:
         with open(file_path) as csv_file:
             reader = csv.reader(csv_file, delimiter=',')
 
             # Init dictionaries
-            movies = dict()
-            actors = dict()
-            writers = dict()
-            directors = dict()
+            movies, actors, writers, directors, locations = import_data_from_database()
 
             # FIXME : test header !
-            header = reader.__next__()
+            header = next(reader)
             if header[0] != 'Title' or header[1] != 'Release Year':
                 return "Bad File.."
 
@@ -41,7 +65,7 @@ def import_data_from_csv(file_path):
                 # Movie already exists create new location
                 if name in movies:
                     if '' != location:
-                        new_location = Location(location, fun_facts, movies[name]['id'])
+                        new_location = Location(location, fun_facts, movies[name])
                         db.session.add(new_location)
                     continue
 
@@ -63,16 +87,13 @@ def import_data_from_csv(file_path):
                         db.session.add(director)
                         db.session.flush()
 
-                        # Save director information
-                        directors[director.name] = {
-                            'id': director.id,
-                            'name': director.name,
-                        }
+                        # Save director id in local dictionary
+                        directors[director.name] = director.id
 
                         # add director_id to movie
                         movie.add_director(director.id)
                     else:
-                        movie.add_director(directors[director]['id'])
+                        movie.add_director(directors[director])
 
                 # Add writer
                 if '' != writer:
@@ -82,14 +103,12 @@ def import_data_from_csv(file_path):
                         db.session.flush()
 
                         # Save director information
-                        writers[writer.name] = {
-                            'id': writer.id,
-                            'name': writer.name,
-                        }
+                        writers[writer.name] = writer.id
+
                         # add director_id to movie
                         movie.add_writer(writer.id)
                     else:
-                        movie.add_writer(writers[writer]['id'])
+                        movie.add_writer(writers[writer])
 
                 # Add Actors
                 for actor_name in movie_actors:
@@ -100,10 +119,7 @@ def import_data_from_csv(file_path):
                             db.session.flush()
 
                             # Save director information
-                            actors[actor_name] = {
-                                'id': actor.id,
-                                'name': actor.name,
-                            }
+                            actors[actor_name] = actor.id
 
                             # add actor to movie
                             movie.add_actor(actor)
@@ -114,12 +130,17 @@ def import_data_from_csv(file_path):
                 db.session.add(movie)
                 db.session.flush()
 
-                movies[name] = {'id': movie.id}
+                # Store movie id in local dictionary
+                movies[name] = movie.id
 
-                # Create new Location if not empty
+                # Create new Location, if not empty and does not exist
                 if '' != location:
-                    new_location = Location(location, fun_facts, movie.id)
-                    db.session.add(new_location)
+                    if (location, movie.id) not in locations:
+                        new_location = Location(location, fun_facts, movie.id)
+                        db.session.add(new_location)
+                        db.session.flush()
+
+                        locations[(location, movie.id)] = new_location.id
 
             # Commit imported data
             db.session.commit()

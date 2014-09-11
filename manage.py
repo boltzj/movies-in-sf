@@ -44,6 +44,11 @@ def import_db():
     Import database data from cvs file
     :return:
     """
+
+    # FIXME: Init database from scratch (with '--force')
+    # db.drop_all()
+    # db.create_all()
+
     # Path of cvs file
     csv_path = (os.path.dirname(__file__) or '.') + '/data/data.csv'
 
