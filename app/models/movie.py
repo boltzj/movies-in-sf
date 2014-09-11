@@ -5,7 +5,7 @@ from app.models.actor import Actor
 # Movie SQLAlchemy model
 class Movie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(255), unique=True, nullable=False)
+    name = db.Column(db.String(255), index=True, unique=True, nullable=False)
     release_year = db.Column(db.Integer)
     production = db.Column(db.String(255))
     distributor = db.Column(db.String(255))
@@ -17,8 +17,8 @@ class Movie(db.Model):
     director_id = db.Column(db.Integer, db.ForeignKey('director.id'))
     writer_id = db.Column(db.Integer, db.ForeignKey('writer.id'))
 
-    def __init__(self, title, release_year, production, distributor):
-        self.title = title
+    def __init__(self, name, release_year, production, distributor):
+        self.name = name
         self.release_year = release_year
         self.production = production
         self.distributor = distributor
@@ -42,7 +42,7 @@ class Movie(db.Model):
 
     def get_information(self):
         return {
-            'title': self.title,
+            'name': self.name,
             'year': self.release_year,
         }
 
