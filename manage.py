@@ -45,9 +45,9 @@ def import_db(force=False):
     :return:
     """
 
-    # FIXME: Init database from scratch (with '--force')
-    # db.drop_all()
-    # db.create_all()
+    if force:
+        db.drop_all()
+        db.create_all()
 
     # Path of cvs file
     csv_path = (os.path.dirname(__file__) or '.') + '/data/data.csv'
